@@ -2,9 +2,11 @@
   "name": "chat-room-back-end",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/app.js",
   "scripts": {
-    "dev": "nodemon app.js"
+    "dev": "nodemon /src/app.js",
+    "migrate": "npx sequelize-cli db:migrate",
+    "undomigrate": "npx sequelize-cli db:migrate:undo"
   },
   "keywords": [],
   "author": "",
