@@ -16,7 +16,7 @@ const createRoom = (req, res) => {
             .status(400)
             .json({ message: `${room.room_name} room already exist` });
     })
-    .catch((error) => res.status(400).json({ message: error.message }));
+    .catch((error) => res.status(400).json({ error: error.message }));
 };
 
 const updateRoom = (req, res) => {
@@ -30,7 +30,7 @@ const updateRoom = (req, res) => {
     room
       .update({ room_name })
       .then(() => res.status(200).json({ message: 'Room updated' }))
-      .catch((error) => res.status(400).json({ message: error.message }));
+      .catch((error) => res.status(400).json({ error: error.message }));
   });
 };
 

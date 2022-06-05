@@ -30,7 +30,7 @@ const createUser = (req, res) => {
         });
       });
     })
-    .catch((error) => res.status(400).json({ message: error.message }));
+    .catch((error) => res.status(400).json({ error: error.message }));
 };
 
 const getUser = (req, res) => {
@@ -74,7 +74,7 @@ const updateUser = (req, res) => {
           },
         })
       )
-      .catch((error) => res.status(400).json({ message: error.message }));
+      .catch((error) => res.status(400).json({ error: error.message }));
   });
 };
 
@@ -87,7 +87,7 @@ const deleteUser = (req, res) => {
     user
       .destroy()
       .then(() => res.status(200).json({ message: 'User deleted' }))
-      .catch((error) => res.status(400).json({ message: error.message }));
+      .catch((error) => res.status(400).json({ error: error.message }));
   });
 };
 
