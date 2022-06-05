@@ -9,6 +9,8 @@ const { Server } = require('socket.io');
 // requires routes
 const roomRoutes = require('./routes/room');
 const userRoutes = require('./routes/user');
+const assignUserRoomRoutes = require('./routes/assignUserRoom');
+const loginRoutes = require('./routes/login');
 
 dotenv.config();
 const hostname = '127.0.0.1';
@@ -54,6 +56,8 @@ app.get('/', (req, res) =>
 // use routes
 app.use(roomRoutes);
 app.use(userRoutes);
+app.use(assignUserRoomRoutes);
+app.use(loginRoutes);
 
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
