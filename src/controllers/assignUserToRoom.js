@@ -15,9 +15,7 @@ const assignUserToRoom = (req, res) => {
     })
     .then((userroom) => {
       if (userroom) {
-        return res
-          .status(400)
-          .json({ message: 'User already assigned to room' });
+        return res.status(400).json({ error: 'User already assigned to room' });
       }
       userRoom
         .create({
@@ -51,7 +49,7 @@ const removeUserToRoom = (req, res) => {
     })
     .then((userroom) => {
       if (!userroom) {
-        return res.status(400).json({ message: 'User not assigned to room' });
+        return res.status(400).json({ error: 'User not assigned to room' });
       }
       userroom.destroy().then(() => {
         res
@@ -78,7 +76,7 @@ const usersInRoom = (req, res) => {
     },
   }).then((usersroom) => {
     if (!usersroom) {
-      return res.status(400).json({ message: 'no one in room' });
+      return res.status(400).json({ error: 'no one in room' });
     }
     res.status(200).json(usersroom.map((users) => users));
   });
@@ -104,10 +102,35 @@ const userInRoom = (req, res) => {
     },
   }).then((userroom) => {
     if (!userroom) {
-      return res.status(400).json({ message: 'no one in room' });
+      return res.status(400).json({ error: 'no one in room' });
     }
     res.status(200).json(userroom);
   });
+};
+
+// get all romms for a user
+const getUserRooms = (req, res) => {
+  const userId = req.params.userId;
+  User.findOne({
+    where: {
+      id: userId,
+    },
+    include: {
+      model: Room,
+      as: 'rooms',
+      attributes: ['room_name', 'id', 'createdBy', 'createdAt'],
+      through: {
+        attributes: ['roomId'],
+      },
+    },
+  })
+    .then((userrooms) => {
+      if (!userrooms) {
+        res.status(400).json({ message: 'no rooms for this user' });
+      }
+      res.status(200).json(userrooms);
+    })
+    .catch((error) => res.status(400).json({ error: error.message }));
 };
 
 module.exports = {
@@ -115,4 +138,5 @@ module.exports = {
   removeUserToRoom,
   usersInRoom,
   userInRoom,
+  getUserRooms,
 };

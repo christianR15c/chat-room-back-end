@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'userId',
         as: 'rooms',
       });
+
+      User.hasMany(models.Message, {
+        foreignKey: 'userId',
+        as: 'messages',
+      });
     }
   }
   User.init(
@@ -37,6 +42,15 @@ module.exports = (sequelize, DataTypes) => {
           args: false,
           msg: 'Please enter your password',
         },
+      },
+      image: {
+        type: DataTypes.STRING,
+        defaultValue:
+          'https://res.cloudinary.com/dmgfxu4fg/image/upload/v1654073043/profile-icon_prev_ui_d7vthy.png',
+      },
+      isAdmin: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
     },
     {
