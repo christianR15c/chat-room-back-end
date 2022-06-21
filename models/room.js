@@ -13,11 +13,17 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'roomId',
         as: 'users',
       });
+
+      Room.hasMany(models.Message, {
+        foreignKey: 'roomId',
+        as: 'messages',
+      });
     }
   }
   Room.init(
     {
       room_name: DataTypes.STRING,
+      createdBy: DataTypes.STRING,
     },
     {
       sequelize,

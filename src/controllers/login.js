@@ -11,29 +11,55 @@ const login = (req, res) => {
   }).then((user) => {
     if (!user) {
       res.status(400).json({ error: `email not registered` });
+    } else {
+      if (bcrypt.compareSync(password, user.password) && user.isAdmin) {
+        adminToken = jwt.sign(
+          {
+            id: user.id,
+          },
+          process.env.ADMIN_SECRET,
+          { expiresIn: '5h' }
+        );
+
+        res
+          .status(200)
+          .header('Auhtorization', adminToken)
+          .json({
+            message: `${user.name} is logged in`,
+            user: {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              isAdmin: user.isAdmin,
+              image: user.image,
+              createdBy: user.createdBy,
+              adminToken,
+            },
+          });
+      } else if (bcrypt.compareSync(password, user.password) && !user.isAdmin) {
+        userToken = jwt.sign(
+          {
+            id: user.id,
+          },
+          process.env.USER_SECRET,
+          { expiresIn: '5h' }
+        );
+        res
+          .status(200)
+          .header('Authorization', userToken)
+          .json({
+            message: `${user.name} is logged in`,
+            user: {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              isAdmin: user.isAdmin,
+              image: user.image,
+              userToken,
+            },
+          });
+      } else res.status(400).json({ error: `password incorrect` });
     }
-    if (bcrypt.compareSync(password, user.password)) {
-      const token = jwt.sign(
-        {
-          id: user.id,
-        },
-        process.env.SECRET_KEY,
-        { expiresIn: '5h' }
-      );
-
-      res.cookie('token', token, {
-        httpOnly: true,
-      });
-
-      res.status(200).json({
-        message: `${user.name} is logged in`,
-        user: {
-          name: user.name,
-          email: user.email,
-          token,
-        },
-      });
-    } else res.status(400).json({ error: `password incorrect` });
   });
 };
 

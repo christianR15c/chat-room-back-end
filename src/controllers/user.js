@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const { User } = model;
 
 const createUser = (req, res) => {
-  const { name, email } = req.body;
+  const { name, email, image } = req.body;
   const password = bcrypt.hashSync(
     req.body.password,
     Number.parseInt(process.env.SALT_ROUNDS, 10)
@@ -20,12 +20,15 @@ const createUser = (req, res) => {
         name,
         email,
         password,
+        image,
       }).then((user) => {
         res.status(200).json({
           message: 'User created successfully',
           user: {
+            id: user.id,
             name: user.name,
             email: user.email,
+            image: user.image,
           },
         });
       });
@@ -57,16 +60,16 @@ const getAllUsers = (req, res) => {
 
 const updateUser = (req, res) => {
   const { userId } = req.params;
-  const { name } = req.body;
+  const { name, image } = req.body;
   User.findByPk(userId).then((user) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
     user
-      .update({ name })
+      .update({ name: name || user.name, image })
       .then(() =>
         res.status(200).json({
-          message: 'User updated',
+          message: 'updated successfully',
           user: {
             id: user.id,
             name: user.name,
